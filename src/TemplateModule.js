@@ -3,9 +3,10 @@ import { Form, Input, Grid, Card, Statistic } from 'semantic-ui-react'
 
 import { useSubstrateState } from './substrate-lib'
 import { TxButton } from './substrate-lib/components'
-
+import { EncointerWorker } from '@encointer/worker-api';
 function Main(props) {
   const { api } = useSubstrateState()
+
 
   // The transaction submission status
   const [status, setStatus] = useState('')
@@ -15,9 +16,11 @@ function Main(props) {
   const [formValue, setFormValue] = useState(0)
 
   useEffect(() => {
+      const worker = new EncointerWorker('wss://integritee-1.cluster.securitee.tech', { api })
+      worker.getShieldingKey().then((sk) => console.log(sk));
     let unsubscribe
-    api.query.templateModule
-      .something(newValue => {
+    api.query.system
+      .palletVersion(newValue => {
         // The storage value is an Option<u32>
         // So we have to check whether it is None first
         // There is also unwrapOr
@@ -33,7 +36,7 @@ function Main(props) {
       .catch(console.error)
 
     return () => unsubscribe && unsubscribe()
-  }, [api.query.templateModule])
+  }, [api.query.system, api])
 
   return (
     <Grid.Column width={8}>
@@ -73,7 +76,7 @@ function Main(props) {
 
 export default function TemplateModule(props) {
   const { api } = useSubstrateState()
-  return api.query.templateModule && api.query.templateModule.something ? (
+  return api.query.system && api.query.system ? (
     <Main {...props} />
   ) : null
 }
