@@ -16,7 +16,10 @@ function Main(props) {
   const [formValue, setFormValue] = useState(0)
 
   useEffect(() => {
-      const worker = new EncointerWorker('wss://integritee-1.cluster.securitee.tech', { api })
+      const worker = new EncointerWorker('wss://integritee-1.cluster.securitee.tech', {
+        createWebSocket: (url) => new WebSocket(url),
+        api: api
+      })
       worker.getShieldingKey().then((sk) => console.log(sk));
     let unsubscribe
     api.query.system
