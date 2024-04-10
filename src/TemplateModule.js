@@ -3,7 +3,7 @@ import { Form, Input, Grid, Card, Statistic } from 'semantic-ui-react'
 
 import { useSubstrateState } from './substrate-lib'
 import { TxButton } from './substrate-lib/components'
-import { EncointerWorker } from '@encointer/worker-api';
+import { IntegriteeWorker } from '@encointer/worker-api';
 function Main(props) {
   const { api } = useSubstrateState()
 
@@ -16,7 +16,7 @@ function Main(props) {
   const [formValue, setFormValue] = useState(0)
 
   useEffect(() => {
-      const worker = new EncointerWorker('wss://integritee-1.cluster.securitee.tech', {
+      const worker = new IntegriteeWorker('wss://scv1.paseo.api.incognitee.io:443', {
         createWebSocket: (url) => new WebSocket(url),
         api: api
       })
