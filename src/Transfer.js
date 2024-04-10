@@ -1,9 +1,27 @@
-import React, { useState } from 'react'
+/* eslint-disable no-unused-vars */
+import React, { useState, useEffect } from 'react'
 import { Form, Input, Grid, Label, Icon, Dropdown } from 'semantic-ui-react'
 import { TxButton } from './substrate-lib/components'
-import { useSubstrateState } from './substrate-lib'
+// import { useSubstrateState } from './substrate-lib'
+import { Keyring } from '@polkadot/keyring'
+import {   mnemonicGenerate,   mnemonicToMiniSecret, mnemonicValidate, ed25519PairFromSeed } from '@polkadot/util-crypto'
+
+import { useSubstrate, useSubstrateState } from './substrate-lib'
 
 export default function Main(props) {
+  const {
+    setCurrentAccount,
+    state: { keyring, currentAccount },
+  } = useSubstrate()
+
+  useEffect(() => {
+    const storedAddress = sessionStorage.getItem('currentAccount');
+    if (storedAddress) {
+      setCurrentAccount(storedAddress);
+    }
+  }, []);
+
+  const [mnemonic, setMnemonic] = useState('');
   const [status, setStatus] = useState(null)
   const [formState, setFormState] = useState({ addressTo: '', amount: 0 })
 
@@ -12,7 +30,7 @@ export default function Main(props) {
 
   const { addressTo, amount } = formState
 
-  const { keyring } = useSubstrateState()
+  // const { keyring } = useSubstrateState()
   const accounts = keyring.getPairs()
 
   const availableAccounts = []
@@ -24,6 +42,34 @@ export default function Main(props) {
     })
   })
 
+  const createAccount = async () => {
+    const generatedMnemonic = mnemonicGenerate();
+    //setMnemonic(generatedMnemonic); // Storing the mnemonic in state (hypothetically)
+    const keyring = new Keyring({ type: 'sr25519', ss58Format: 42 });
+
+    // Add account from mnemonic
+    const account = keyring.addFromMnemonic(generatedMnemonic);
+
+    // Create valid Substrate-compatible seed from mnemonic
+    const seed = mnemonicToMiniSecret(generatedMnemonic);
+
+    // Generate new public/secret keypair for Alice from the supplied seed
+    const { secretKey } = ed25519PairFromSeed(seed);
+    // Convert the private key to a hexadecimal string
+    const privateKeyHex = Buffer.from(secretKey).toString('hex');
+    console.log(`Private Key in Hex: ${privateKeyHex}`);
+
+    setCurrentAccount(account.address);
+
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set('seed', privateKeyHex);
+    window.history.pushState({ path: currentUrl.href }, '', currentUrl.href);
+
+    console.log(`New account created: ${account.address}`)
+  };
+
+  console.log(`Account: ${currentAccount}`)
+  
   return (
     <Grid.Column width={8}>
       <h1>Transfer</h1>
@@ -86,6 +132,8 @@ export default function Main(props) {
               paramFields: [true, true],
             }}
           />
+          <button onClick={createAccount}>Create Account</button>
+          {/* <TxButton accountAddress={accountAddress} /> */}
         </Form.Field>
         <div style={{ overflowWrap: 'break-word' }}>{status}</div>
       </Form>

@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { encodeAddress } from '@polkadot/util-crypto';
 
 import {
   Menu,
@@ -38,15 +40,18 @@ function Main(props) {
     keyringOptions.length > 0 ? keyringOptions[0].value : ''
 
   // Set the initial address
-  useEffect(() => {
-    // `setCurrentAccount()` is called only when currentAccount is null (uninitialized)
-    !currentAccount &&
-      initialAddress.length > 0 &&
-      setCurrentAccount(keyring.getPair(initialAddress))
-  }, [currentAccount, setCurrentAccount, keyring, initialAddress])
+  // useEffect(() => {
+  //   // `setCurrentAccount()` is called only when currentAccount is null (uninitialized)
+  //   !currentAccount &&
+  //     initialAddress.length > 0 &&
+  //     setCurrentAccount(keyring.getPair(initialAddress))
+  // }, [currentAccount, setCurrentAccount, keyring, initialAddress])
+
+  console.log(`Account: ${currentAccount}`)
 
   const onChange = addr => {
-    setCurrentAccount(keyring.getPair(addr))
+    console.log(keyring.getPair(addr))
+    //setCurrentAccount(keyring.getPair(addr))
   }
 
   return (
@@ -68,7 +73,7 @@ function Main(props) {
           />
         </Menu.Menu>
         <Menu.Menu position="right" style={{ alignItems: 'center' }}>
-          {!currentAccount ? (
+          {/* {!currentAccount ? (
             <span>
               Create an account with Polkadot-JS Extension (
               <a target="_blank" rel="noreferrer" href={CHROME_EXT_URL}>
@@ -80,8 +85,13 @@ function Main(props) {
               </a>
               )&nbsp;
             </span>
+          ) : null} */}
+          {!currentAccount ? (
+            <span>
+              Please generate a new account&nbsp;
+            </span>
           ) : null}
-          <CopyToClipboard text={acctAddr(currentAccount)}>
+          <CopyToClipboard text={currentAccount}>
             <Button
               basic
               circular
@@ -90,7 +100,8 @@ function Main(props) {
               color={currentAccount ? 'green' : 'red'}
             />
           </CopyToClipboard>
-          <Dropdown
+          <span>{currentAccount}</span>
+          {/* <Dropdown
             search
             selection
             clearable
@@ -100,8 +111,9 @@ function Main(props) {
               onChange(dropdown.value)
             }}
             value={acctAddr(currentAccount)}
-          />
-          <BalanceAnnotation />
+          /> */}
+          {/* <BalanceAnnotation /> */}
+          <TempBalanceAnnotation />
         </Menu.Menu>
       </Container>
     </Menu>
@@ -135,6 +147,39 @@ function BalanceAnnotation(props) {
     </Label>
   ) : null
 }
+
+function TempBalanceAnnotation(props) {
+  const { api, currentAccount } = useSubstrateState()
+  const [balance, setBalance] = useState(0);
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        // Fetch the account balance
+        const { data: { free: currentBalance } } = await api.query.system.account(currentAccount);
+        console.log(encodeAddress(currentAccount, 42));
+
+        // Update state with the balance
+        setBalance(currentBalance.toString());
+        console.log(currentBalance.toString());
+      } catch (error) {
+        console.error(error);
+        setBalance('Error fetching balance');
+      }
+    };
+
+    if (currentAccount) {
+      fetchBalance();
+    }
+  }, [currentAccount]);
+
+  return currentAccount ? (
+    <Label pointing="left">
+      <Icon name="money" color="green" />
+      {balance}
+    </Label>
+  ) : null
+};
 
 export default function AccountSelector(props) {
   const { api, keyring } = useSubstrateState()

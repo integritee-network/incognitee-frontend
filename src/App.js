@@ -1,4 +1,5 @@
-import React, { createRef } from 'react'
+/* eslint-disable no-unused-vars */
+import React, { createRef, useEffect } from 'react'
 import {
   Container,
   Dimmer,
@@ -13,7 +14,7 @@ import { SubstrateContextProvider, useSubstrateState } from './substrate-lib'
 import { DeveloperConsole } from './substrate-lib/components'
 
 import AccountSelector from './AccountSelector'
-import Balances from './Balances'
+// import Balances from './Balances'
 import BlockNumber from './BlockNumber'
 import Events from './Events'
 import Interactor from './Interactor'
@@ -22,9 +23,34 @@ import NodeInfo from './NodeInfo'
 import TemplateModule from './TemplateModule'
 import Transfer from './Transfer'
 import Upgrade from './Upgrade'
+import { mnemonicToMiniSecret } from '@polkadot/util-crypto';
+import { Keyring } from '@polkadot/keyring';
+import { hexToU8a } from '@polkadot/util';
 
 function Main() {
   const { apiState, apiError, keyringState } = useSubstrateState()
+  // Function to get the seed from the URI
+  const getSeedFromURI = () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    return searchParams.get('seed');
+  };
+
+  const generateAndLogAccountFromSeed = (seed) => {
+    const keyring = new Keyring({ type: 'sr25519' });
+    const miniSecret = mnemonicToMiniSecret(hexToU8a(seed));
+    const account = keyring.addFromSeed(miniSecret);
+    
+    console.log(`Account address: ${account.address}`);
+    return account.address; // Return or use the account address as needed
+  };
+
+  useEffect(() => {
+    const seed = getSeedFromURI();
+
+    if (seed) {
+      generateAndLogAccountFromSeed(seed);
+    } 
+  }, []);
 
   const loader = text => (
     <Dimmer active>
@@ -70,9 +96,9 @@ function Main() {
             <BlockNumber />
             <BlockNumber finalized />
           </Grid.Row>
-          <Grid.Row stretched>
+          {/* <Grid.Row stretched>
             <Balances />
-          </Grid.Row>
+          </Grid.Row> */}
           <Grid.Row>
             <Transfer />
             <Upgrade />
