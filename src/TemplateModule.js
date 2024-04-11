@@ -18,7 +18,7 @@ function Main(props) {
   useEffect(() => {
       const worker = new IntegriteeWorker('wss://scv1.paseo.api.incognitee.io:443', {
         createWebSocket: (url) => new WebSocket(url),
-        api: api
+        types: api.registry.types
       })
       worker.getShieldingKey().then((sk) => console.log(sk));
     let unsubscribe
