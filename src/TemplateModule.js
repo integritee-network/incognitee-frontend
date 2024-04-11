@@ -20,18 +20,18 @@ function Main(props) {
         createWebSocket: (url) => new WebSocket(url),
         types: api.registry.types
       })
-      // works
-      worker.getShardVault().then((sk) => console.log(`Vault: ${sk.toHuman()}}`));
-      // let keyring = new Keyring({type: "sr25519"});
-      // let alice = keyring.addFromUri('//Alice', {name: 'Alice default'});
-      // works: but get current shard empty error
-      // worker.getBalance(alice, '7RuM6U4DLEtrTnVntDjDPBCAN4LbCGRpnmcTYUGhLqc7')
-      //   .then((balance) => console.log(`Alice balance: ${balance.toHuman()}`))
-      // //  works: but get current shard empty error
-      // worker.getNonce(alice, '7RuM6U4DLEtrTnVntDjDPBCAN4LbCGRpnmcTYUGhLqc7')
-      //   .then((nonce) => console.log(`Alice balance: ${nonce.toHuman()}`))
-      // fails
-      worker.getShieldingKey().then((key) => console.log(`Shielding key: ${JSON.stringify(key)}`));
+    // works
+    // worker.getShardVault().then((sk) => console.log(`Vault: ${sk.toHuman()}}`));
+    // let keyring = new Keyring({type: "sr25519"});
+    // let alice = keyring.addFromUri('//Alice', {name: 'Alice default'});
+    // works: but get current shard empty error
+    // worker.getBalance(alice, '7RuM6U4DLEtrTnVntDjDPBCAN4LbCGRpnmcTYUGhLqc7')
+    //   .then((balance) => console.log(`Alice balance: ${balance.toHuman()}`))
+    // //  works: but get current shard empty error
+    // worker.getNonce(alice, '7RuM6U4DLEtrTnVntDjDPBCAN4LbCGRpnmcTYUGhLqc7')
+    //   .then((nonce) => console.log(`Alice balance: ${nonce.toHuman()}`))
+    // fails
+    worker.getShieldingKey().then((key) => console.log(`Shielding key: ${JSON.stringify(key)}`));
 
 
     let unsubscribe
