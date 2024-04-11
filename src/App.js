@@ -1,4 +1,5 @@
-import React, { createRef } from 'react'
+/* eslint-disable no-unused-vars */
+import React, { createRef, useEffect } from 'react'
 import {
   Container,
   Dimmer,
@@ -9,7 +10,7 @@ import {
 } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css'
 
-import { SubstrateContextProvider, useSubstrateState } from './substrate-lib'
+import { SubstrateContextProvider, useSubstrate } from './substrate-lib'
 import { DeveloperConsole } from './substrate-lib/components'
 
 import AccountSelector from './AccountSelector'
@@ -22,9 +23,37 @@ import NodeInfo from './NodeInfo'
 import TemplateModule from './TemplateModule'
 import Transfer from './Transfer'
 import Upgrade from './Upgrade'
+import {cryptoWaitReady, mnemonicToMiniSecret} from '@polkadot/util-crypto';
+import { Keyring } from '@polkadot/keyring';
+import {bnFromHex, hexToU8a} from '@polkadot/util';
 
 function Main() {
-  const { apiState, apiError, keyringState } = useSubstrateState()
+  const { setCurrentAccount, state: {apiState, apiError, keyring, keyringState} } = useSubstrate()
+  // Function to get the seed from the URI
+  const getSeedFromURI = () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    return searchParams.get('seed');
+  };
+
+  const generateAndLogAccountFromSeed = (seedHex) => {
+    const localKeyring = new Keyring({ type: 'sr25519' });
+    const account = localKeyring.addFromSeed(hexToU8a(seedHex), { name: 'url-provided' });
+
+    console.log(`Account address: ${account.address}`);
+    keyring.addPair(account);
+    console.log(keyring.getPairs());
+    return account; // Return or use the account address as needed
+  };
+
+  useEffect(() => {
+    const seedHex = getSeedFromURI();
+
+    if ((seedHex) && (keyringState==='READY')){
+      cryptoWaitReady().then(() => {
+        setCurrentAccount(generateAndLogAccountFromSeed(seedHex))
+      });
+    }
+  }, [keyringState]);
 
   const loader = text => (
     <Dimmer active>
