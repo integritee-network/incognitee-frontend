@@ -37,9 +37,10 @@ function Main() {
 
   const generateAndLogAccountFromSeed = (seedHex) => {
     const keyring = new Keyring({ type: 'sr25519' });
-    const account = keyring.addFromSeed(hexToU8a(seedHex));
+    const account = keyring.addFromSeed(hexToU8a(seedHex), { name: 'url-provided' });
 
     console.log(`Account address: ${account.address}`);
+    console.log(keyring.getPairs());
     return account.address; // Return or use the account address as needed
   };
 

@@ -47,7 +47,7 @@ export default function Main(props) {
     const keyring = new Keyring({ type: 'sr25519', ss58Format: 42 });
 
     // Add account from mnemonic
-    const account = keyring.addFromMnemonic(generatedMnemonic);
+    const account = keyring.addFromMnemonic(generatedMnemonic, { name: 'fresh' });
 
     // Create valid Substrate-compatible seed from mnemonic
     const seed = mnemonicToMiniSecret(generatedMnemonic);
@@ -55,7 +55,7 @@ export default function Main(props) {
     // Convert the private key to a hexadecimal string
     const privateKeyHex = u8aToHex(seed);
     console.log(`Private Key in Hex: ${privateKeyHex}`);
-
+    console.log(keyring.getPairs());
     setCurrentAccount(account.address);
 
     const currentUrl = new URL(window.location.href);
