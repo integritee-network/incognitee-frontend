@@ -101,19 +101,6 @@ function Main(props) {
             />
           </CopyToClipboard>
           <span>{currentAccount?.address}</span>
-          {/* <Dropdown
-            search
-            selection
-            clearable
-            placeholder="Select an account"
-            options={keyringOptions}
-            onChange={(_, dropdown) => {
-              onChange(dropdown.value)
-            }}
-            value={acctAddr(currentAccount)}
-          /> */}
-          {/* <BalanceAnnotation /> */}
-          <TempBalanceAnnotation />
         </Menu.Menu>
       </Container>
     </Menu>
