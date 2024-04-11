@@ -45,7 +45,7 @@ function TxButton({
 
   const getFromAcct = async () => {
     console.log(currentAccount?.address);
-    return [currentAccount?.address]
+    return [currentAccount]
   }
 
   const txResHandler = ({ events = [], status, txHash }) =>{

@@ -47,7 +47,7 @@ export default function Main(props) {
     const localKeyring = new Keyring({ type: 'sr25519', ss58Format: 42 });
 
     // Add account from mnemonic
-    const account = localKeyring.addFromMnemonic(generatedMnemonic, { name: 'fresh' });
+    const account = localKeyring.addFromMnemonic(generatedMnemonic, { name: 'fresh'});
 
     // Create valid Substrate-compatible seed from mnemonic
     const seed = mnemonicToMiniSecret(generatedMnemonic);
