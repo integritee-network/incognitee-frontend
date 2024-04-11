@@ -44,8 +44,8 @@ function TxButton({
   useEffect(loadSudoKey, [api])
 
   const getFromAcct = async () => {
-    console.log(currentAccount);
-    return [currentAccount]
+    console.log(currentAccount?.address);
+    return [currentAccount?.address]
   }
 
   const txResHandler = ({ events = [], status, txHash }) =>{
@@ -297,7 +297,7 @@ function TxButton({
         !allParamsFilled() ||
         // These txs required currentAccount to be set
         ((isSudo() || isUncheckedSudo() || isSigned()) && !currentAccount) ||
-        ((isSudo() || isUncheckedSudo()) && !isSudoer(currentAccount))
+        ((isSudo() || isUncheckedSudo()) && !isSudoer(currentAccount?.address))
       }
     >
       {label}

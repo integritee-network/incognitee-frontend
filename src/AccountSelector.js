@@ -47,7 +47,7 @@ function Main(props) {
   //     setCurrentAccount(keyring.getPair(initialAddress))
   // }, [currentAccount, setCurrentAccount, keyring, initialAddress])
 
-  console.log(`Account: ${currentAccount}`)
+  console.log(`Account: ${currentAccount?.address}`)
 
   const onChange = addr => {
     console.log(keyring.getPair(addr))
@@ -91,16 +91,16 @@ function Main(props) {
               Please generate a new account&nbsp;
             </span>
           ) : null}
-          <CopyToClipboard text={currentAccount}>
+          <CopyToClipboard text={currentAccount?.address}>
             <Button
               basic
               circular
               size="large"
               icon="user"
-              color={currentAccount ? 'green' : 'red'}
+              color={currentAccount?.address ? 'green' : 'red'}
             />
           </CopyToClipboard>
-          <span>{currentAccount}</span>
+          <span>{currentAccount?.address}</span>
           {/* <Dropdown
             search
             selection
@@ -131,7 +131,7 @@ function BalanceAnnotation(props) {
     // If the user has selected an address, create a new subscription
     currentAccount &&
       api.query.system
-        .account(acctAddr(currentAccount), balance =>
+        .account(acctAddr(currentAccount?.address), balance =>
           setAccountBalance(balance.data.free.toHuman())
         )
         .then(unsub => (unsubscribe = unsub))
@@ -140,7 +140,7 @@ function BalanceAnnotation(props) {
     return () => unsubscribe && unsubscribe()
   }, [api, currentAccount])
 
-  return currentAccount ? (
+  return currentAccount?.address ? (
     <Label pointing="left">
       <Icon name="money" color="green" />
       {accountBalance}
@@ -156,8 +156,8 @@ function TempBalanceAnnotation(props) {
     const fetchBalance = async () => {
       try {
         // Fetch the account balance
-        const { data: { free: currentBalance } } = await api.query.system.account(currentAccount);
-        console.log(encodeAddress(currentAccount, 42));
+        const { data: { free: currentBalance } } = await api.query.system.account(currentAccount?.address);
+        console.log(encodeAddress(currentAccount?.address, 42));
 
         // Update state with the balance
         setBalance(currentBalance.toString());
@@ -173,7 +173,7 @@ function TempBalanceAnnotation(props) {
     }
   }, [currentAccount]);
 
-  return currentAccount ? (
+  return currentAccount?.address ? (
     <Label pointing="left">
       <Icon name="money" color="green" />
       {balance}

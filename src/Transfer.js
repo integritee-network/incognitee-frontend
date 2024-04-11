@@ -57,7 +57,7 @@ export default function Main(props) {
     console.log(`Private Key in Hex: ${privateKeyHex}`);
     keyring.addPair(account);
     console.log(keyring.getPairs());
-    setCurrentAccount(account.address);
+    setCurrentAccount(account);
 
     const currentUrl = new URL(window.location.href);
     currentUrl.searchParams.set('seed', privateKeyHex);
@@ -66,7 +66,7 @@ export default function Main(props) {
     console.log(`New account created: ${account.address}`)
   };
 
-  console.log(`Account: ${currentAccount}`)
+  console.log(`Account: ${currentAccount?.address}`)
 
   return (
     <Grid.Column width={8}>

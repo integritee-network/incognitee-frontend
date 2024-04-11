@@ -41,7 +41,7 @@ function Main() {
     console.log(`Account address: ${account.address}`);
     keyring.addPair(account);
     console.log(keyring.getPairs());
-    return account.address; // Return or use the account address as needed
+    return account; // Return or use the account address as needed
   };
 
   useEffect(() => {
