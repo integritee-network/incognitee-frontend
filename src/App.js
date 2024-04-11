@@ -23,9 +23,9 @@ import NodeInfo from './NodeInfo'
 import TemplateModule from './TemplateModule'
 import Transfer from './Transfer'
 import Upgrade from './Upgrade'
-import { mnemonicToMiniSecret } from '@polkadot/util-crypto';
+import {cryptoWaitReady, mnemonicToMiniSecret} from '@polkadot/util-crypto';
 import { Keyring } from '@polkadot/keyring';
-import { hexToU8a } from '@polkadot/util';
+import {bnFromHex, hexToU8a} from '@polkadot/util';
 
 function Main() {
   const { apiState, apiError, keyringState } = useSubstrateState()
@@ -35,21 +35,22 @@ function Main() {
     return searchParams.get('seed');
   };
 
-  const generateAndLogAccountFromSeed = (seed) => {
+  const generateAndLogAccountFromSeed = (seedHex) => {
     const keyring = new Keyring({ type: 'sr25519' });
-    const miniSecret = mnemonicToMiniSecret(hexToU8a(seed));
-    const account = keyring.addFromSeed(miniSecret);
-    
+    const account = keyring.addFromSeed(hexToU8a(seedHex));
+
     console.log(`Account address: ${account.address}`);
     return account.address; // Return or use the account address as needed
   };
 
   useEffect(() => {
-    const seed = getSeedFromURI();
+    const seedHex = getSeedFromURI();
 
-    if (seed) {
-      generateAndLogAccountFromSeed(seed);
-    } 
+    if (seedHex) {
+      cryptoWaitReady().then(() => {
+        sessionStorage.setItem('currentAccount', generateAndLogAccountFromSeed(seedHex))
+      });
+    }
   }, []);
 
   const loader = text => (

@@ -7,6 +7,7 @@ import { Keyring } from '@polkadot/keyring'
 import {   mnemonicGenerate,   mnemonicToMiniSecret, mnemonicValidate, ed25519PairFromSeed } from '@polkadot/util-crypto'
 
 import { useSubstrate, useSubstrateState } from './substrate-lib'
+import {u8aToHex} from "@polkadot/util";
 
 export default function Main(props) {
   const {
@@ -53,10 +54,8 @@ export default function Main(props) {
     // Create valid Substrate-compatible seed from mnemonic
     const seed = mnemonicToMiniSecret(generatedMnemonic);
 
-    // Generate new public/secret keypair for Alice from the supplied seed
-    const { secretKey } = ed25519PairFromSeed(seed);
     // Convert the private key to a hexadecimal string
-    const privateKeyHex = Buffer.from(secretKey).toString('hex');
+    const privateKeyHex = u8aToHex(seed);
     console.log(`Private Key in Hex: ${privateKeyHex}`);
 
     setCurrentAccount(account.address);
@@ -69,7 +68,7 @@ export default function Main(props) {
   };
 
   console.log(`Account: ${currentAccount}`)
-  
+
   return (
     <Grid.Column width={8}>
       <h1>Transfer</h1>
