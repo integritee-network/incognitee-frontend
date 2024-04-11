@@ -31,15 +31,13 @@ export default function Main(props) {
 
   const { addressTo, amount } = formState
 
-  // const { keyring } = useSubstrateState()
-  const accounts = keyring.getPairs()
-
+  const accounts = [currentAccount]
   const availableAccounts = []
   accounts.map(account => {
     return availableAccounts.push({
-      key: account.meta.name,
-      text: account.meta.name,
-      value: account.address,
+      key: account,
+      text: account,
+      value: account,
     })
   })
 
@@ -88,18 +86,6 @@ export default function Main(props) {
         </Form.Field>
 
         <Form.Field>
-          <Dropdown
-            placeholder="Select from available addresses"
-            fluid
-            selection
-            search
-            options={availableAccounts}
-            state="addressTo"
-            onChange={onChange}
-          />
-        </Form.Field>
-
-        <Form.Field>
           <Input
             fluid
             label="To"
@@ -126,7 +112,7 @@ export default function Main(props) {
             setStatus={setStatus}
             attrs={{
               palletRpc: 'balances',
-              callable: 'transfer',
+              callable: 'transferKeepAlive',
               inputParams: [addressTo, amount],
               paramFields: [true, true],
             }}

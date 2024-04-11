@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Button } from 'semantic-ui-react'
-import { web3FromSource } from '@polkadot/extension-dapp'
 
 import { useSubstrateState } from '../'
 import utils from '../utils'
@@ -45,19 +44,8 @@ function TxButton({
   useEffect(loadSudoKey, [api])
 
   const getFromAcct = async () => {
-    const {
-      address,
-      meta: { source, isInjected },
-    } = currentAccount
-
-    if (!isInjected) {
-      return [currentAccount]
-    }
-
-    // currentAccount is injected from polkadot-JS extension, need to return the addr and signer object.
-    // ref: https://polkadot.js.org/docs/extension/cookbook#sign-and-send-a-transaction
-    const injector = await web3FromSource(source)
-    return [address, { signer: injector.signer }]
+    console.log(currentAccount);
+    return [currentAccount]
   }
 
   const txResHandler = ({ events = [], status, txHash }) =>{
@@ -72,7 +60,7 @@ function TxButton({
           const [dispatchError, dispatchInfo] = data;
           console.log(`dispatchinfo: ${dispatchInfo}`)
           let errorInfo;
-          
+
           // decode the error
           if (dispatchError.isModule) {
             // for module errors, we have the section indexed, lookup
@@ -85,7 +73,7 @@ function TxButton({
             let message = `${error.section}.${error.name}${
                 Array.isArray(error.docs) ? `(${error.docs.join('')})` : error.docs || ''
             }`
-            
+
             errorInfo = `${message}`;
             console.log(`Error-info::${JSON.stringify(error)}`)
           } else {

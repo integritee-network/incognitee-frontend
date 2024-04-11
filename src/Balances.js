@@ -4,12 +4,14 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { useSubstrateState } from './substrate-lib'
 
 export default function Main(props) {
-  const { api, keyring } = useSubstrateState()
-  const accounts = keyring.getPairs()
+  const { api, currentAccount } = useSubstrateState()
+  const accounts = [currentAccount]
   const [balances, setBalances] = useState({})
 
   useEffect(() => {
-    const addresses = keyring.getPairs().map(account => account.address)
+
+      const addresses = [sessionStorage.getItem('currentAccount')];
+
     let unsubscribeAll = null
 
     api.query.system.account
@@ -29,7 +31,7 @@ export default function Main(props) {
       .catch(console.error)
 
     return () => unsubscribeAll && unsubscribeAll()
-  }, [api, keyring, setBalances])
+  }, [api, currentAccount, setBalances])
 
   return (
     <Grid.Column>
@@ -42,9 +44,6 @@ export default function Main(props) {
         <Table celled striped size="small">
           <Table.Body>
             <Table.Row>
-              <Table.Cell width={3} textAlign="right">
-                <strong>Name</strong>
-              </Table.Cell>
               <Table.Cell width={10}>
                 <strong>Address</strong>
               </Table.Cell>
@@ -53,15 +52,12 @@ export default function Main(props) {
               </Table.Cell>
             </Table.Row>
             {accounts.map(account => (
-              <Table.Row key={account.address}>
-                <Table.Cell width={3} textAlign="right">
-                  {account.meta.name}
-                </Table.Cell>
+              <Table.Row key={account}>
                 <Table.Cell width={10}>
                   <span style={{ display: 'inline-block', minWidth: '31em' }}>
-                    {account.address}
+                    {account}
                   </span>
-                  <CopyToClipboard text={account.address}>
+                  <CopyToClipboard text={account}>
                     <Button
                       basic
                       circular
@@ -74,8 +70,8 @@ export default function Main(props) {
                 </Table.Cell>
                 <Table.Cell width={3}>
                   {balances &&
-                    balances[account.address] &&
-                    balances[account.address]}
+                    balances[account] &&
+                    balances[account]}
                 </Table.Cell>
               </Table.Row>
             ))}
