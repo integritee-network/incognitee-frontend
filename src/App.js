@@ -27,7 +27,7 @@ import { Keyring } from '@polkadot/keyring';
 import {bnFromHex, hexToU8a} from '@polkadot/util';
 
 function Main() {
-  const { setCurrentAccount, state: {apiState, apiError, keyringState} } = useSubstrate()
+  const { setCurrentAccount, state: {apiState, apiError, keyring, keyringState} } = useSubstrate()
   // Function to get the seed from the URI
   const getSeedFromURI = () => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -35,10 +35,11 @@ function Main() {
   };
 
   const generateAndLogAccountFromSeed = (seedHex) => {
-    const keyring = new Keyring({ type: 'sr25519' });
-    const account = keyring.addFromSeed(hexToU8a(seedHex), { name: 'url-provided' });
+    const localKeyring = new Keyring({ type: 'sr25519' });
+    const account = localKeyring.addFromSeed(hexToU8a(seedHex), { name: 'url-provided' });
 
     console.log(`Account address: ${account.address}`);
+    keyring.addPair(account);
     console.log(keyring.getPairs());
     return account.address; // Return or use the account address as needed
   };
@@ -46,12 +47,12 @@ function Main() {
   useEffect(() => {
     const seedHex = getSeedFromURI();
 
-    if (seedHex) {
+    if ((seedHex) && (keyringState==='READY')){
       cryptoWaitReady().then(() => {
         setCurrentAccount(generateAndLogAccountFromSeed(seedHex))
       });
     }
-  }, []);
+  }, [keyringState]);
 
   const loader = text => (
     <Dimmer active>

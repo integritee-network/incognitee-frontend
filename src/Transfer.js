@@ -44,10 +44,10 @@ export default function Main(props) {
   const createAccount = async () => {
     const generatedMnemonic = mnemonicGenerate();
     //setMnemonic(generatedMnemonic); // Storing the mnemonic in state (hypothetically)
-    const keyring = new Keyring({ type: 'sr25519', ss58Format: 42 });
+    const localKeyring = new Keyring({ type: 'sr25519', ss58Format: 42 });
 
     // Add account from mnemonic
-    const account = keyring.addFromMnemonic(generatedMnemonic, { name: 'fresh' });
+    const account = localKeyring.addFromMnemonic(generatedMnemonic, { name: 'fresh' });
 
     // Create valid Substrate-compatible seed from mnemonic
     const seed = mnemonicToMiniSecret(generatedMnemonic);
@@ -55,6 +55,7 @@ export default function Main(props) {
     // Convert the private key to a hexadecimal string
     const privateKeyHex = u8aToHex(seed);
     console.log(`Private Key in Hex: ${privateKeyHex}`);
+    keyring.addPair(account);
     console.log(keyring.getPairs());
     setCurrentAccount(account.address);
 
