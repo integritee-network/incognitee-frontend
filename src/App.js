@@ -10,11 +10,10 @@ import {
 } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css'
 
-import { SubstrateContextProvider, useSubstrateState } from './substrate-lib'
+import { SubstrateContextProvider, useSubstrate } from './substrate-lib'
 import { DeveloperConsole } from './substrate-lib/components'
 
 import AccountSelector from './AccountSelector'
-import Balances from './Balances'
 import BlockNumber from './BlockNumber'
 import Events from './Events'
 import Interactor from './Interactor'
@@ -28,7 +27,7 @@ import { Keyring } from '@polkadot/keyring';
 import {bnFromHex, hexToU8a} from '@polkadot/util';
 
 function Main() {
-  const { apiState, apiError, keyringState } = useSubstrateState()
+  const { setCurrentAccount, state: {apiState, apiError, keyringState} } = useSubstrate()
   // Function to get the seed from the URI
   const getSeedFromURI = () => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -49,7 +48,7 @@ function Main() {
 
     if (seedHex) {
       cryptoWaitReady().then(() => {
-        sessionStorage.setItem('currentAccount', generateAndLogAccountFromSeed(seedHex))
+        setCurrentAccount(generateAndLogAccountFromSeed(seedHex))
       });
     }
   }, []);
@@ -97,9 +96,6 @@ function Main() {
             <Metadata />
             <BlockNumber />
             <BlockNumber finalized />
-          </Grid.Row>
-          <Grid.Row stretched>
-            <Balances />
           </Grid.Row>
           <Grid.Row>
             <Transfer />

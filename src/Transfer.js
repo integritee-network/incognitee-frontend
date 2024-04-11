@@ -16,10 +16,10 @@ export default function Main(props) {
   } = useSubstrate()
 
   useEffect(() => {
-    const storedAddress = sessionStorage.getItem('currentAccount');
-    if (storedAddress) {
-      setCurrentAccount(storedAddress);
-    }
+    //const storedAddress = sessionStorage.getItem('currentAccount');
+    //if (storedAddress) {
+    //  setCurrentAccount(storedAddress);
+    //}
   }, []);
 
   const [mnemonic, setMnemonic] = useState('');
