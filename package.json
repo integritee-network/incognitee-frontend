@@ -25,7 +25,7 @@
     "deploy": "gh-pages -d build -m '[ci skip] Updates'"
   },
   "dependencies": {
-    "@encointer/worker-api": "^0.12.0-alpha.6",
+    "@encointer/worker-api": "^0.12.0-alpha.7",
     "@polkadot/api": "^10.6.1",
     "@polkadot/extension-dapp": "^0.46.2",
     "@polkadot/keyring": "^12.1.2",
@@ -35,6 +35,7 @@
     "@polkadot/ui-settings": "^3.3.1",
     "@polkadot/util": "^12.1.2",
     "@polkadot/util-crypto": "^12.1.2",
+    "crypto-browserify": "^3.12.0",
     "node-polyfill-webpack-plugin": "^1.1.4",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
