@@ -49,6 +49,8 @@ const reducer = (state, action) => {
       return { ...state, keyring: null, keyringState: 'ERROR' }
     case 'SET_CURRENT_ACCOUNT':
       return { ...state, currentAccount: action.payload }
+    case 'SET_VAULT_ACCOUNT':
+      return { ...state, vaultAccount: action.payload }
     default:
       throw new Error(`Unknown type: ${action.type}`)
   }
@@ -152,9 +154,12 @@ const SubstrateContextProvider = props => {
   function setCurrentAccount(acct) {
     dispatch({ type: 'SET_CURRENT_ACCOUNT', payload: acct })
   }
+  function setVaultAccount(acct) {
+    dispatch({ type: 'SET_VAULT_ACCOUNT', payload: acct })
+  }
 
   return (
-    <SubstrateContext.Provider value={{ state, setCurrentAccount }}>
+    <SubstrateContext.Provider value={{ state, setCurrentAccount, setVaultAccount }}>
       {props.children}
     </SubstrateContext.Provider>
   )

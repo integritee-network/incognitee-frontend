@@ -1,18 +1,18 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react'
-import { Form, Input, Grid, Label, Icon, Dropdown } from 'semantic-ui-react'
-import { TxButton } from './substrate-lib/components'
+import React, {useState, useEffect} from 'react'
+import {Form, Input, Grid, Label, Icon, Dropdown} from 'semantic-ui-react'
+import {TxButton} from './substrate-lib/components'
 // import { useSubstrateState } from './substrate-lib'
-import { Keyring } from '@polkadot/keyring'
-import {   mnemonicGenerate,   mnemonicToMiniSecret, mnemonicValidate, ed25519PairFromSeed } from '@polkadot/util-crypto'
+import {Keyring} from '@polkadot/keyring'
+import {mnemonicGenerate, mnemonicToMiniSecret, mnemonicValidate, ed25519PairFromSeed} from '@polkadot/util-crypto'
 
-import { useSubstrate, useSubstrateState } from './substrate-lib'
+import {useSubstrate, useSubstrateState} from './substrate-lib'
 import {u8aToHex} from "@polkadot/util";
 
 export default function Main(props) {
   const {
     setCurrentAccount,
-    state: { keyring, currentAccount },
+    state: {keyring, currentAccount, vaultAccount},
   } = useSubstrate()
 
   useEffect(() => {
@@ -21,15 +21,14 @@ export default function Main(props) {
     //  setCurrentAccount(storedAddress);
     //}
   }, []);
-
   const [mnemonic, setMnemonic] = useState('');
   const [status, setStatus] = useState(null)
-  const [formState, setFormState] = useState({ addressTo: '', amount: 0 })
+  const [formState, setFormState] = useState({addressTo: '', amount: 0})
 
   const onChange = (_, data) =>
-    setFormState(prev => ({ ...prev, [data.state]: data.value }))
+    setFormState(prev => ({...prev, [data.state]: data.value}))
 
-  const { addressTo, amount } = formState
+  const {addressTo, amount} = formState
 
   const accounts = [currentAccount]
   const availableAccounts = []
@@ -44,10 +43,10 @@ export default function Main(props) {
   const createAccount = async () => {
     const generatedMnemonic = mnemonicGenerate();
     //setMnemonic(generatedMnemonic); // Storing the mnemonic in state (hypothetically)
-    const localKeyring = new Keyring({ type: 'sr25519', ss58Format: 42 });
+    const localKeyring = new Keyring({type: 'sr25519', ss58Format: 42});
 
     // Add account from mnemonic
-    const account = localKeyring.addFromMnemonic(generatedMnemonic, { name: 'fresh'});
+    const account = localKeyring.addFromMnemonic(generatedMnemonic, {name: 'fresh'});
 
     // Create valid Substrate-compatible seed from mnemonic
     const seed = mnemonicToMiniSecret(generatedMnemonic);
@@ -61,7 +60,7 @@ export default function Main(props) {
 
     const currentUrl = new URL(window.location.href);
     currentUrl.searchParams.set('seed', privateKeyHex);
-    window.history.pushState({ path: currentUrl.href }, '', currentUrl.href);
+    window.history.pushState({path: currentUrl.href}, '', currentUrl.href);
 
     console.log(`New account created: ${account.address}`)
   };
@@ -71,6 +70,7 @@ export default function Main(props) {
   return (
     <Grid.Column width={8}>
       <h1>Transfer PAS on L1</h1>
+      Vault Account: {vaultAccount}
       <Form>
         <Form.Field>
           <Input
@@ -95,7 +95,7 @@ export default function Main(props) {
             onChange={onChange}
           />
         </Form.Field>
-        <Form.Field style={{ textAlign: 'center' }}>
+        <Form.Field style={{textAlign: 'center'}}>
           <TxButton
             label="Submit"
             type="SIGNED-TX"
@@ -110,7 +110,7 @@ export default function Main(props) {
           <button onClick={createAccount}>Create Account</button>
           {/* <TxButton accountAddress={accountAddress} /> */}
         </Form.Field>
-        <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+        <div style={{overflowWrap: 'break-word'}}>{status}</div>
       </Form>
     </Grid.Column>
   )

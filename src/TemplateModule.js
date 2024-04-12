@@ -1,28 +1,30 @@
-import React, { useEffect, useState } from 'react'
-import { Form, Input, Grid, Card, Statistic } from 'semantic-ui-react'
+import React, {useEffect, useState} from 'react'
+import {Form, Input, Grid, Card, Statistic} from 'semantic-ui-react'
 
-import { useSubstrateState } from './substrate-lib'
-import { TxButton } from './substrate-lib/components'
-import { IntegriteeWorker } from '@encointer/worker-api';
+import {useSubstrate, useSubstrateState} from './substrate-lib'
+import {TxButton} from './substrate-lib/components'
+import {IntegriteeWorker} from '@encointer/worker-api';
 import {Keyring} from "@polkadot/keyring";
+
 function Main(props) {
-  const { api } = useSubstrateState()
-
-
+  const {setVaultAccount, state: {api, vaultAccount}} = useSubstrate()
   // The transaction submission status
   const [status, setStatus] = useState('')
-
   // The currently stored value
   const [currentValue, setCurrentValue] = useState(0)
   const [formValue, setFormValue] = useState(0)
 
   useEffect(() => {
-      const worker = new IntegriteeWorker('wss://scv1.paseo.api.incognitee.io:443', {
-        createWebSocket: (url) => new WebSocket(url),
-        types: api.registry.types
-      })
+    const worker = new IntegriteeWorker('wss://scv1.paseo.api.incognitee.io:443', {
+      createWebSocket: (url) => new WebSocket(url),
+      types: api.registry.types
+    })
     // works
-    worker.getShardVault().then((sk) => console.log(`Vault: ${sk.toHuman()}}`));
+    worker.getShardVault().then((sk) => {
+      setVaultAccount(sk[0].toHuman())
+      console.log('Vault: ')
+      console.log(sk[0])
+    });
     let keyring = new Keyring({type: "sr25519"});
     let alice = keyring.addFromUri('//Alice', {name: 'Alice default'});
     let bob = keyring.addFromUri('//Bob', {name: 'Alice default'});
@@ -49,7 +51,7 @@ function Main(props) {
         alice.address,
         bob.address,
         1100000000000
-        ).then((hash) => console.log(`trustedOperationHash: ${hash}`));
+      ).then((hash) => console.log(`trustedOperationHash: ${hash}`));
 
     } catch (error) {
       console.log(`Error submitting the trusted operation: ${error}`)
@@ -77,10 +79,11 @@ function Main(props) {
 
   return (
     <Grid.Column width={8}>
-      <h1>Template Module</h1>
+      <h1>Incognitee L2</h1>
+      Vault account: {vaultAccount}
       <Card centered>
         <Card.Content textAlign="center">
-          <Statistic label="Current Value" value={currentValue} />
+          <Statistic label="Current Value" value={currentValue}/>
         </Card.Content>
       </Card>
       <Form>
@@ -89,10 +92,10 @@ function Main(props) {
             label="New Value"
             state="newValue"
             type="number"
-            onChange={(_, { value }) => setFormValue(value)}
+            onChange={(_, {value}) => setFormValue(value)}
           />
         </Form.Field>
-        <Form.Field style={{ textAlign: 'center' }}>
+        <Form.Field style={{textAlign: 'center'}}>
           <TxButton
             label="Store Something"
             type="SIGNED-TX"
@@ -105,14 +108,14 @@ function Main(props) {
             }}
           />
         </Form.Field>
-        <div style={{ overflowWrap: 'break-word' }}>{status}</div>
+        <div style={{overflowWrap: 'break-word'}}>{status}</div>
       </Form>
     </Grid.Column>
   )
 }
 
 export default function TemplateModule(props) {
-  const { api } = useSubstrateState()
+  const {api} = useSubstrateState()
   return api.query.system && api.query.system ? (
     <Main {...props} />
   ) : null
