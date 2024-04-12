@@ -5,7 +5,9 @@ import { useSubstrateState } from './substrate-lib'
 
 // Events to be filtered from feed
 const FILTERED_EVENTS = [
-  'system:ExtrinsicSuccess::(phase={"applyExtrinsic":0})',
+  'system:ExtrinsicSuccess',
+  'paraInclusion:CandidateIncluded',
+  'paraInclusion:CandidateBacked',
 ]
 
 const eventName = ev => `${ev.section}:${ev.method}`
@@ -23,15 +25,14 @@ function Main(props) {
         // loop through the Vec<EventRecord>
         events.forEach(record => {
           // extract the phase, event and the event types
-          const { event, phase } = record
+          const { event } = record
 
           // show what we are busy with
           const evHuman = event.toHuman()
           const evName = eventName(evHuman)
           const evParams = eventParams(evHuman)
-          const evNamePhase = `${evName}::(phase=${phase.toString()})`
-
-          if (FILTERED_EVENTS.includes(evNamePhase)) return
+          console.log(evName)
+          if (FILTERED_EVENTS.includes(evName)) return
 
           setEventFeed(e => [
             {
@@ -56,7 +57,7 @@ function Main(props) {
 
   return (
     <Grid.Column width={8}>
-      <h1 style={{ float: 'left' }}>Events</h1>
+      <h1 style={{ float: 'left' }}>Events on L1</h1>
       <Button
         basic
         circular
