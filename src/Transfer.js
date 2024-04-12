@@ -70,22 +70,8 @@ export default function Main(props) {
 
   return (
     <Grid.Column width={8}>
-      <h1>Transfer</h1>
+      <h1>Transfer PAS on L1</h1>
       <Form>
-        <Form.Field>
-          <Label basic color="teal">
-            <Icon name="hand point right" />1 Unit = 1000000000000&nbsp;
-          </Label>
-          <Label
-            basic
-            color="teal"
-            style={{ marginLeft: 0, marginTop: '.5em' }}
-          >
-            <Icon name="hand point right" />
-            Transfer more than the existential amount for account with 0 balance
-          </Label>
-        </Form.Field>
-
         <Form.Field>
           <Input
             fluid
@@ -100,9 +86,12 @@ export default function Main(props) {
         <Form.Field>
           <Input
             fluid
+            step='0.1'
             label="Amount"
             type="number"
             state="amount"
+            placeholder='Enter PAS Amount'
+            pattern='^([1-9](?:\.[1-9])?|0?\.[1-9])$'
             onChange={onChange}
           />
         </Form.Field>
@@ -114,7 +103,7 @@ export default function Main(props) {
             attrs={{
               palletRpc: 'balances',
               callable: 'transferKeepAlive',
-              inputParams: [addressTo, amount],
+              inputParams: [addressTo, amount * Math.pow(10, 10)],
               paramFields: [true, true],
             }}
           />
