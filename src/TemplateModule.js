@@ -22,26 +22,22 @@ function Main(props) {
         types: api.registry.types
       })
     // works
-    // worker.getShardVault().then((sk) => console.log(`Vault: ${sk.toHuman()}}`));
+    worker.getShardVault().then((sk) => console.log(`Vault: ${sk.toHuman()}}`));
     let keyring = new Keyring({type: "sr25519"});
     let alice = keyring.addFromUri('//Alice', {name: 'Alice default'});
     let bob = keyring.addFromUri('//Bob', {name: 'Alice default'});
-    // works: but get current shard empty error
+    // works
     const shard = '5wePd1LYa5M49ghwgZXs55cepKbJKhj5xfzQGfPeMS7c';
     const mrenclave = '7RuM6U4DLEtrTnVntDjDPBCAN4LbCGRpnmcTYUGhLqc7';
-    // try {
-    //   worker.getBalance(alice, shard)
+    //
+    // // works: get balance of an account for a shard
+    // worker.getBalance(alice, shard)
     //     .then((balance) => console.log(`Alice balance: ${balance}`));
-    // } catch (error) {
-    //   console.log(`Error getting Alice's balance: ${error}`)
-    // }
-    // try {
+    //
+    // // works: get the nonce of an account for a shard.
+    // // We don't actually need to use this. `trustedBalanceTransfer` uses this internally.
     //   worker.getNonce(alice, shard)
     //     .then((nonce) => console.log(`Alice balance: ${nonce}`));
-    // } catch (error) {
-    //   console.log(`Error getting Alice's nonce: ${error}`)
-    // }
-    //
 
     try {
       // this does only call `author_submit`, so we can only know if the trusted call is valid, but we
@@ -54,13 +50,6 @@ function Main(props) {
         bob.address,
         1100000000000
         ).then((hash) => console.log(`trustedOperationHash: ${hash}`));
-
-      // worker.getShieldingKey()
-      //   .then((sk) => {
-      //     console.log("encrypting hello");
-      //     sk.encrypt("hello");
-      //     console.log("encrypted hello")
-      //   });
 
     } catch (error) {
       console.log(`Error submitting the trusted operation: ${error}`)

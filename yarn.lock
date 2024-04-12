@@ -1611,32 +1611,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@encointer/node-api@npm:^0.12.0-alpha.11":
-  version: 0.12.0-alpha.11
-  resolution: "@encointer/node-api@npm:0.12.0-alpha.11"
+"@encointer/node-api@npm:^0.12.0-alpha.12":
+  version: 0.12.0-alpha.12
+  resolution: "@encointer/node-api@npm:0.12.0-alpha.12"
   dependencies:
-    "@encointer/types": ^0.12.0-alpha.11
+    "@encointer/types": ^0.12.0-alpha.12
     "@polkadot/api": ^10.9.1
     tslib: ^2.5.3
-  checksum: d11ffb943aaa220a5254d7ea264fcb04587a2ba4deca662240872e6cb281b70cbb7d821783b11fffe6077181e49b52f8fda3ba6ab441b61e3e39dc5ca3573712
+  checksum: be17a8f52ad3adf4c3cde13869ad090f1e4537706d196524ce524d002bcdede8bd2f4465129ebd3710d3bc421f65a4ec7b9c0c7eb6b6e0fe191291f9ae0b1a67
   languageName: node
   linkType: hard
 
-"@encointer/types@npm:^0.12.0-alpha.11":
-  version: 0.12.0-alpha.11
-  resolution: "@encointer/types@npm:0.12.0-alpha.11"
+"@encointer/types@npm:^0.12.0-alpha.12":
+  version: 0.12.0-alpha.12
+  resolution: "@encointer/types@npm:0.12.0-alpha.12"
   dependencies:
     "@polkadot/api": ^10.9.1
     "@polkadot/types": ^10.9.1
     "@polkadot/types-codec": ^10.9.1
     "@polkadot/util": ^12.3.2
-  checksum: ff6f0927c564be37914acaf613c134c7eeef1f656c52fa9edb174a43e1264c6527b7e873e0173f329ce55107b8d599a58485d20a53351bae67be09433da9fe5c
+  checksum: 08fba3bdfcc79b61f4153d227fcde6a586b6fb5a871a58d0bd2d721a56afc36ebc62120ce09ca56d2e6ec9bcba45151ad71073875c7428c6afbb195f172ce482
   languageName: node
   linkType: hard
 
-"@encointer/util@npm:^0.12.0-alpha.11":
-  version: 0.12.0-alpha.11
-  resolution: "@encointer/util@npm:0.12.0-alpha.11"
+"@encointer/util@npm:^0.12.0-alpha.12":
+  version: 0.12.0-alpha.12
+  resolution: "@encointer/util@npm:0.12.0-alpha.12"
   dependencies:
     "@babel/runtime": ^7.18.9
     "@polkadot/util": ^12.3.2
@@ -1644,17 +1644,17 @@ __metadata:
     "@types/bn.js": ^5.1.1
     assert: ^2.0.0
     bn.js: ^5.2.1
-  checksum: 6bc0d2c648e53c4a41e72fb95ac088159cbc7232094e79a88fa3d9d990704a174e4a75956bbdcab5063e5613973b3f0da6149d8dd5a1919df3463a4f8d54ac5b
+  checksum: fece60fd7c32426813ef0407e6c2888cbcd7bf2e9d452f6afcc80f414839c9d9ca2efc5ac1280ad3bffea43bd23fa16d664c139748025a9af65180d310ecb999
   languageName: node
   linkType: hard
 
-"@encointer/worker-api@npm:^0.12.0-alpha.11":
-  version: 0.12.0-alpha.11
-  resolution: "@encointer/worker-api@npm:0.12.0-alpha.11"
+"@encointer/worker-api@npm:^0.12.0-alpha.12":
+  version: 0.12.0-alpha.12
+  resolution: "@encointer/worker-api@npm:0.12.0-alpha.12"
   dependencies:
-    "@encointer/node-api": ^0.12.0-alpha.11
-    "@encointer/types": ^0.12.0-alpha.11
-    "@encointer/util": ^0.12.0-alpha.11
+    "@encointer/node-api": ^0.12.0-alpha.12
+    "@encointer/types": ^0.12.0-alpha.12
+    "@encointer/util": ^0.12.0-alpha.12
     "@polkadot/api": ^10.9.1
     "@polkadot/keyring": ^12.3.2
     "@polkadot/types": ^10.9.1
@@ -1668,7 +1668,7 @@ __metadata:
     websocket-as-promised: ^2.0.1
   peerDependencies:
     "@polkadot/x-randomvalues": ^12.3.2
-  checksum: 718f97754fa86d9f02c9b40c0b3ec41fb0bf9607c9a77dd29861011c7768aa22fee40a43300725b5d57cc1f0a48594d0aa7fc268222c6834dfcd8a43946de063
+  checksum: d4544cfaf73718b46d8adcf5b7328bf314eb43c06764421ba43f9546312768ce41f58a9e084328051fc44e097b85406815d0c088fcf1a756c4bd4f8f5f8191ba
   languageName: node
   linkType: hard
 
@@ -13959,7 +13959,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "substrate-front-end-template@workspace:."
   dependencies:
-    "@encointer/worker-api": ^0.12.0-alpha.11
+    "@encointer/worker-api": ^0.12.0-alpha.12
     "@polkadot/api": ^10.6.1
     "@polkadot/extension-dapp": ^0.46.2
     "@polkadot/keyring": ^12.1.2
