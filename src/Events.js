@@ -3,18 +3,10 @@ import { Feed, Grid, Button } from 'semantic-ui-react'
 
 import { useSubstrateState } from './substrate-lib'
 
-// Events to be filtered from feed
-const FILTERED_EVENTS = [
-  'system:ExtrinsicSuccess',
-  'paraInclusion:CandidateIncluded',
-  'paraInclusion:CandidateBacked',
-]
-
 const eventName = ev => `${ev.section}:${ev.method}`
-const eventParams = ev => JSON.stringify(ev.data)
 
 function Main(props) {
-  const { api } = useSubstrateState()
+  const { api, vaultAccount } = useSubstrateState()
   const [eventFeed, setEventFeed] = useState([])
 
   useEffect(() => {
@@ -26,32 +18,31 @@ function Main(props) {
         events.forEach(record => {
           // extract the phase, event and the event types
           const { event } = record
-
           // show what we are busy with
           const evHuman = event.toHuman()
           const evName = eventName(evHuman)
-          const evParams = eventParams(evHuman)
-          console.log(evName)
-          if (FILTERED_EVENTS.includes(evName)) return
-
-          setEventFeed(e => [
-            {
-              key: keyNum,
-              icon: 'bell',
-              summary: evName,
-              content: evParams,
-            },
-            ...e,
-          ])
-
-          keyNum += 1
+          if (evName === 'balances:Transfer') {
+            const {from, to, amount } = evHuman.data;
+            if (to === vaultAccount) {
+              setEventFeed(e => [
+                {
+                  key: keyNum,
+                  icon: 'bell',
+                  summary: evName + ' shielding',
+                  content: 'from: ' + from + ' amount: ' + amount,
+                },
+                ...e,
+              ])
+              keyNum += 1
+            }
+          }
         })
       })
     }
 
     allEvents()
     return () => unsub && unsub()
-  }, [api.query.system])
+  }, [api.query.system, vaultAccount])
 
   const { feedMaxHeight = 250 } = props
 
