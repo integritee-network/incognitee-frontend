@@ -25,6 +25,7 @@
     "deploy": "gh-pages -d build -m '[ci skip] Updates'"
   },
   "dependencies": {
+    "@encointer/worker-api": "^0.12.0-alpha.12",
     "@polkadot/api": "^10.6.1",
     "@polkadot/extension-dapp": "^0.46.2",
     "@polkadot/keyring": "^12.1.2",

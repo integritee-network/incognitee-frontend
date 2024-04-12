@@ -3,9 +3,11 @@ import { Form, Input, Grid, Card, Statistic } from 'semantic-ui-react'
 
 import { useSubstrateState } from './substrate-lib'
 import { TxButton } from './substrate-lib/components'
-
+import { IntegriteeWorker } from '@encointer/worker-api';
+import {Keyring} from "@polkadot/keyring";
 function Main(props) {
   const { api } = useSubstrateState()
+
 
   // The transaction submission status
   const [status, setStatus] = useState('')
@@ -15,16 +17,54 @@ function Main(props) {
   const [formValue, setFormValue] = useState(0)
 
   useEffect(() => {
+      const worker = new IntegriteeWorker('wss://scv1.paseo.api.incognitee.io:443', {
+        createWebSocket: (url) => new WebSocket(url),
+        types: api.registry.types
+      })
+    // works
+    worker.getShardVault().then((sk) => console.log(`Vault: ${sk.toHuman()}}`));
+    let keyring = new Keyring({type: "sr25519"});
+    let alice = keyring.addFromUri('//Alice', {name: 'Alice default'});
+    let bob = keyring.addFromUri('//Bob', {name: 'Alice default'});
+    // works
+    const shard = '5wePd1LYa5M49ghwgZXs55cepKbJKhj5xfzQGfPeMS7c';
+    const mrenclave = '7RuM6U4DLEtrTnVntDjDPBCAN4LbCGRpnmcTYUGhLqc7';
+    //
+    // // works: get balance of an account for a shard
+    // worker.getBalance(alice, shard)
+    //     .then((balance) => console.log(`Alice balance: ${balance}`));
+    //
+    // // works: get the nonce of an account for a shard.
+    // // We don't actually need to use this. `trustedBalanceTransfer` uses this internally.
+    //   worker.getNonce(alice, shard)
+    //     .then((nonce) => console.log(`Alice balance: ${nonce}`));
+
+    try {
+      // this does only call `author_submit`, so we can only know if the trusted call is valid, but we
+      // can't know here if the trusted call has been executed without an error.
+      worker.trustedBalanceTransfer(
+        alice,
+        shard,
+        mrenclave,
+        alice.address,
+        bob.address,
+        1100000000000
+        ).then((hash) => console.log(`trustedOperationHash: ${hash}`));
+
+    } catch (error) {
+      console.log(`Error submitting the trusted operation: ${error}`)
+    }
+
     let unsubscribe
-    api.query.templateModule
-      .something(newValue => {
+    api.query.system
+      .palletVersion(newValue => {
         // The storage value is an Option<u32>
         // So we have to check whether it is None first
         // There is also unwrapOr
         if (newValue.isNone) {
           setCurrentValue('<None>')
         } else {
-          setCurrentValue(newValue.unwrap().toNumber())
+          // setCurrentValue(newValue.unwrap().toNumber())
         }
       })
       .then(unsub => {
@@ -33,7 +73,7 @@ function Main(props) {
       .catch(console.error)
 
     return () => unsubscribe && unsubscribe()
-  }, [api.query.templateModule])
+  }, [api.query.system, api])
 
   return (
     <Grid.Column width={8}>
@@ -73,7 +113,7 @@ function Main(props) {
 
 export default function TemplateModule(props) {
   const { api } = useSubstrateState()
-  return api.query.templateModule && api.query.templateModule.something ? (
+  return api.query.system && api.query.system ? (
     <Main {...props} />
   ) : null
 }
