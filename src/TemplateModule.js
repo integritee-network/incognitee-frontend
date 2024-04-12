@@ -4,6 +4,7 @@ import { Form, Input, Grid, Card, Statistic } from 'semantic-ui-react'
 import { useSubstrateState } from './substrate-lib'
 import { TxButton } from './substrate-lib/components'
 import { IntegriteeWorker } from '@encointer/worker-api';
+import {Keyring} from "@polkadot/keyring";
 function Main(props) {
   const { api } = useSubstrateState()
 
@@ -22,17 +23,48 @@ function Main(props) {
       })
     // works
     // worker.getShardVault().then((sk) => console.log(`Vault: ${sk.toHuman()}}`));
-    // let keyring = new Keyring({type: "sr25519"});
-    // let alice = keyring.addFromUri('//Alice', {name: 'Alice default'});
+    let keyring = new Keyring({type: "sr25519"});
+    let alice = keyring.addFromUri('//Alice', {name: 'Alice default'});
+    let bob = keyring.addFromUri('//Bob', {name: 'Alice default'});
     // works: but get current shard empty error
-    // worker.getBalance(alice, '7RuM6U4DLEtrTnVntDjDPBCAN4LbCGRpnmcTYUGhLqc7')
-    //   .then((balance) => console.log(`Alice balance: ${balance.toHuman()}`))
-    // //  works: but get current shard empty error
-    // worker.getNonce(alice, '7RuM6U4DLEtrTnVntDjDPBCAN4LbCGRpnmcTYUGhLqc7')
-    //   .then((nonce) => console.log(`Alice balance: ${nonce.toHuman()}`))
-    // fails
-    worker.getShieldingKey().then((key) => console.log(`Shielding key: ${JSON.stringify(key)}`));
+    const shard = '5wePd1LYa5M49ghwgZXs55cepKbJKhj5xfzQGfPeMS7c';
+    const mrenclave = '7RuM6U4DLEtrTnVntDjDPBCAN4LbCGRpnmcTYUGhLqc7';
+    // try {
+    //   worker.getBalance(alice, shard)
+    //     .then((balance) => console.log(`Alice balance: ${balance}`));
+    // } catch (error) {
+    //   console.log(`Error getting Alice's balance: ${error}`)
+    // }
+    // try {
+    //   worker.getNonce(alice, shard)
+    //     .then((nonce) => console.log(`Alice balance: ${nonce}`));
+    // } catch (error) {
+    //   console.log(`Error getting Alice's nonce: ${error}`)
+    // }
+    //
 
+    try {
+      // this does only call `author_submit`, so we can only know if the trusted call is valid, but we
+      // can't know here if the trusted call has been executed without an error.
+      worker.trustedBalanceTransfer(
+        alice,
+        shard,
+        mrenclave,
+        alice.address,
+        bob.address,
+        1100000000000
+        ).then((hash) => console.log(`trustedOperationHash: ${hash}`));
+
+      // worker.getShieldingKey()
+      //   .then((sk) => {
+      //     console.log("encrypting hello");
+      //     sk.encrypt("hello");
+      //     console.log("encrypted hello")
+      //   });
+
+    } catch (error) {
+      console.log(`Error submitting the trusted operation: ${error}`)
+    }
 
     let unsubscribe
     api.query.system
@@ -43,7 +75,7 @@ function Main(props) {
         if (newValue.isNone) {
           setCurrentValue('<None>')
         } else {
-          setCurrentValue(newValue.unwrap().toNumber())
+          // setCurrentValue(newValue.unwrap().toNumber())
         }
       })
       .then(unsub => {
