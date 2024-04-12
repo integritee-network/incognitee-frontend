@@ -17,15 +17,12 @@ import AccountSelector from './AccountSelector'
 import Balances from './Balances'
 import BlockNumber from './BlockNumber'
 import Events from './Events'
-import Interactor from './Interactor'
-import Metadata from './Metadata'
 import NodeInfo from './NodeInfo'
 import TemplateModule from './TemplateModule'
 import Transfer from './Transfer'
-import Upgrade from './Upgrade'
-import {cryptoWaitReady, mnemonicToMiniSecret} from '@polkadot/util-crypto';
+import {cryptoWaitReady} from '@polkadot/util-crypto';
 import { Keyring } from '@polkadot/keyring';
-import {bnFromHex, hexToU8a} from '@polkadot/util';
+import {hexToU8a} from '@polkadot/util';
 
 function Main() {
   const { setCurrentAccount, state: {apiState, apiError, keyring, keyringState} } = useSubstrate()
@@ -95,7 +92,6 @@ function Main() {
         <Grid stackable columns="equal">
           <Grid.Row stretched>
             <NodeInfo />
-            <Metadata />
             <BlockNumber />
             <BlockNumber finalized />
           </Grid.Row>
@@ -104,10 +100,6 @@ function Main() {
           </Grid.Row>
           <Grid.Row>
             <Transfer />
-            <Upgrade />
-          </Grid.Row>
-          <Grid.Row>
-            <Interactor />
             <Events />
           </Grid.Row>
           <Grid.Row>
